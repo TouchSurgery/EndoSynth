@@ -32,7 +32,7 @@ Sutcliffe, Vanessa Thompson, Muhammad Asad, Imanol Luengo, and Danail Stoyanov*
 
 ## Weights
 
-| Model   | acc@2mm | # params | github | fine-tuned `EndoSynth` (-F) |
+| Model   | acc@2cm | # params | github | fine-tuned `EndoSynth` (-F) |
 |:--------|--------:|---------:|:---------|---------:|
 | DAv1    | 0.87    | 97M      | [LiheYoung/Depth-Anything](https://github.com/LiheYoung/Depth-Anything) | [ckpt]() |
 | DAv2    | 0.81    | 97M      | [DepthAnything-V2](https://github.com/DepthAnything/Depth-Anything-V2)| [ckpt]() |
@@ -40,9 +40,23 @@ Sutcliffe, Vanessa Thompson, Muhammad Asad, Imanol Luengo, and Danail Stoyanov*
 | MIDAS   | 0.77    | 345M     | [isl-org/MiDaS](https://github.com/isl-org/MiDaS) | [ckpt]() |
 
 
+```bash
+
+mkdir -p checkpoints
+wget <weights_uri> -P checkpoints
+```
+
+
 ## Dataset
 
 Please find the `EndoSynth` dataset as in [this following download link]() [zipped folder]
+
+```bash
+
+wget <endosynth_uri>
+mkdir -p datasets
+unzip <EndoSynth-v1.0.zip> -d datasets
+```
 
 ### Folder Structure
 ```
@@ -101,10 +115,10 @@ git clone https://github.com/LiheYoung/Depth-Anything.git third_party/
 git clone https://github.com/DepthAnything/Depth-Anything-V2.git third_party/
 git clone https://github.com/BeileiCui/EndoDAC.git third_party/
 git clone https://github.com/isl-org/MiDaS.git third_party/
-export PYTHONPATH=${PWD}/third_party/third_party/Depth-Anything:${PYTHONPATH}
-export PYTHONPATH=${PWD}/third_party/third_party/Depth-Anything-V2:${PYTHONPATH}
-export PYTHONPATH=${PWD}/third_party/third_party/EndoDAC:${PYTHONPATH}
-export PYTHONPATH=${PWD}/third_party/third_party/MiDaS:${PYTHONPATH}
+export PYTHONPATH=${PWD}/third_party/Depth-Anything:${PYTHONPATH}
+export PYTHONPATH=${PWD}/third_party/Depth-Anything-V2:${PYTHONPATH}
+export PYTHONPATH=${PWD}/third_party/EndoDAC:${PYTHONPATH}
+export PYTHONPATH=${PWD}/third_party/MiDaS:${PYTHONPATH}
 ```
 
 #### Inference code
@@ -122,7 +136,7 @@ model = load("dav1")
 rgb = np.load("./datasets/EndoSynth/samples/000010.npz")["rgb"]
 depth = model.infer(rgb)
 
-Image.fromarray(depth2rgb(depth).astype(np.uint8)).save("out.png")
+Image.fromarray(depth2rgb(depth, 0.02, 0.20).astype(np.uint8)).save("out.png")
 ```
 
 ## Citation
@@ -130,7 +144,7 @@ Image.fromarray(depth2rgb(depth).astype(np.uint8)).save("out.png")
 If you use this work, weights or dataset, please cite:
 
 ```bibtex
-@inproceedings{depthanything,
+@inproceedings{endosynth,
       title={Zero-shot Monocular Metric Depth for Endoscopic Images},
       author={Nicolas Toussaint, Emanuele Colleoni, Ricardo Sanchez-Matilla, Joshua Sutcliffe, Vanessa Thompson, Muhammad Asad, Imanol Luengo, Danail Stoyanov},
       booktitle={Data Engineering for Medical Imaging, MICCAI},

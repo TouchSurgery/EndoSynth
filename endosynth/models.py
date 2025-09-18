@@ -5,6 +5,8 @@ from torchvision.transforms import Compose
 from torchvision.transforms import Normalize
 import torch.nn.functional as F
 import cv2
+from typing import Optional
+import types
 
 # DAv1 from https://github.com/LiheYoung/Depth-Anything in .
 from depth_anything.dpt import DPT_DINOv2
@@ -48,24 +50,24 @@ class Wrapper(object):
         self.act: torch.nn.Module = None
 
     def to_tensor(
-        self, x: np.ndarray, input_size: int = None
+        self, x: np.ndarray, width: int = None, height: int = None, normalise: bool = True
     ) -> tuple[torch.Tensor, tuple[int, int]]:
 
-        transform = Compose(
-            [
-                Resize(
-                    width=input_size,
-                    height=input_size,
+        transforms = [
+            Resize(
+                    width=width,
+                    height=height,
                     resize_target=False,
-                    keep_aspect_ratio=True,
+                    keep_aspect_ratio=False,
                     ensure_multiple_of=14,
                     resize_method="lower_bound",
                     image_interpolation_method=cv2.INTER_CUBIC,
-                ),
-                NormalizeImage(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-                PrepareForNet(),
-            ]
-        )
+                )
+        ]
+        if normalise:
+            transforms.append(NormalizeImage(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))
+        transforms.append(PrepareForNet())
+        transform = Compose(transforms)
 
         h, w = x.shape[:2]
         image = cv2.cvtColor(x, cv2.COLOR_BGR2RGB) / 255.0
@@ -82,12 +84,10 @@ class Wrapper(object):
 
     @torch.no_grad()
     def infer(self, x: np.ndarray) -> np.ndarray:
-        image, (h, w) = self.to_tensor(x, 518)
+        image, (h, w) = self.to_tensor(x, 742, 420)
         logits = self._model(image)
         depth = self.act(logits) * MAX_DEPTH
-        depth = F.interpolate(
-            depth[:, None], (h, w), mode="bilinear", align_corners=True
-        )[0, 0]
+        depth = F.interpolate(depth[:, None], (h, w), mode="bilinear", align_corners=True)[0, 0]
         return depth.cpu().numpy().squeeze()
 
 
@@ -110,6 +110,23 @@ class DAv2(Wrapper):
         config = dict(encoder="vitb", features=128, out_channels=[96, 192, 384, 768])
         self._model = DepthAnythingV2(**config)
         self.act = DepthAnythingAct("v2")
+        # need to remove the relu from the last sequential layer
+        conv_2 = self._model.depth_head.scratch.output_conv2
+        last_conv = torch.nn.Sequential(*list(conv_2.children())[:-2])
+        self._model.depth_head.scratch.output_conv2 = last_conv
+        
+
+    @torch.no_grad()
+    def infer(self, x: np.ndarray) -> np.ndarray:
+        x, (h, w) = self.to_tensor(x, 742, 420)
+        # need to manually go through the feature extraction to avoid a relu call in the model forward
+        patch_h, patch_w = x.shape[-2] // 14, x.shape[-1] // 14
+        features = self._model.pretrained.get_intermediate_layers(x, [2, 5, 8, 11], return_class_token=True)
+        logits = self._model.depth_head(features, patch_h, patch_w)
+
+        depth = self.act(logits) * MAX_DEPTH
+        depth = F.interpolate(depth, (h, w), mode="bilinear", align_corners=True)[0, 0]
+        return depth.cpu().numpy().squeeze()
 
 
 class EndoDAC(Wrapper):
@@ -132,7 +149,7 @@ class EndoDAC(Wrapper):
 
     @torch.no_grad()
     def infer(self, x: np.ndarray) -> np.ndarray:
-        h, w = x.shape[-2:]
+        x, (h, w) = self.to_tensor(x, 742, 420)
         disp = self._model(x)[("disp", 0)]
         disp = F.interpolate(disp, size=(h, w), mode="bilinear", align_corners=True)
         min_disp = 1 / MAX_DEPTH
@@ -146,7 +163,7 @@ class Midas(Wrapper):
         super().__init__(device)
         self._model = DPTDepthModel(
             path=None, backbone="beitl16_512", non_negative=True
-        )
+        )        
         self.normaliser = Normalize(0.5, 0.5)
         self.ALPHA = 70000
 
@@ -159,12 +176,10 @@ class Midas(Wrapper):
 
     @torch.no_grad()
     def infer(self, x: np.ndarray) -> np.ndarray:
-        h, w = x.shape[-2:]
+        x, (h, w) = self.to_tensor(x, 742, 420, normalise=False)
         x = self.normaliser(x)
         o = self._model(x)
-        o = F.interpolate(
-            o.unsqueeze(1), size=(h, w), mode="bilinear", align_corners=True
-        )
+        o = F.interpolate(o.unsqueeze(1), size=(h, w), mode="bilinear", align_corners=True)
         min_disp = 1 / MAX_DEPTH
         max_disp = 1 / 0.001
         depth = self.ALPHA / (min_disp + (max_disp - min_disp) * x)
