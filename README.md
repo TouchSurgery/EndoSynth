@@ -42,7 +42,7 @@ Sutcliffe, Vanessa Thompson, Muhammad Asad, Imanol Luengo, and Danail Stoyanov*
 
 ---
 
-:warning: **By downloading this dataset you are agreeing in our [LICENSE](LICENSE.txt) terms**
+:warning: **By downloading these weights you are agreeing in our [LICENSE](LICENSE.txt) terms**
 
 ---
 
