@@ -40,6 +40,10 @@ Sutcliffe, Vanessa Thompson, Muhammad Asad, Imanol Luengo, and Danail Stoyanov*
 | MIDAS   | 0.77    | 345M     | [isl-org/MiDaS](https://github.com/isl-org/MiDaS) | [ckpt]() |
 
 
+---
+#### :warning: By downloading these weights you are agreeing in our [LICENSE](LICENSE.txt) terms
+---
+
 ```bash
 
 mkdir -p checkpoints
@@ -50,6 +54,11 @@ wget <weights_uri> -P checkpoints
 ## Dataset
 
 Please find the `EndoSynth` dataset as in [this following download link]() [zipped folder]
+
+---
+#### :warning: By downloading this dataset you are agreeing in our [LICENSE](LICENSE.txt) terms
+---
+
 
 ```bash
 
