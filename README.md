@@ -41,7 +41,9 @@ Sutcliffe, Vanessa Thompson, Muhammad Asad, Imanol Luengo, and Danail Stoyanov*
 
 
 ---
-#### :warning: By downloading these weights you are agreeing in our [LICENSE](LICENSE.txt) terms
+
+:warning: **By downloading this dataset you are agreeing in our [LICENSE](LICENSE.txt) terms**
+
 ---
 
 ```bash
@@ -56,7 +58,9 @@ wget <weights_uri> -P checkpoints
 Please find the `EndoSynth` dataset as in [this following download link]() [zipped folder]
 
 ---
-#### :warning: By downloading this dataset you are agreeing in our [LICENSE](LICENSE.txt) terms
+
+:warning: **By downloading this dataset you are agreeing in our [LICENSE](LICENSE.txt) terms**
+
 ---
 
 
