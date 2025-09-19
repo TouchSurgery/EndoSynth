@@ -34,10 +34,10 @@ Sutcliffe, Vanessa Thompson, Muhammad Asad, Imanol Luengo, and Danail Stoyanov*
 
 | Model   | acc@2cm | # params | github | fine-tuned `EndoSynth` (-F) |
 |:--------|--------:|---------:|:---------|---------:|
-| DAv1    | 0.87    | 97M      | [LiheYoung/Depth-Anything](https://github.com/LiheYoung/Depth-Anything) | [ckpt]() |
-| DAv2    | 0.81    | 97M      | [DepthAnything-V2](https://github.com/DepthAnything/Depth-Anything-V2)| [ckpt]() |
-| EndoDAC | 0.72    | 42M      | [BeileiCui/EndoDAC](https://github.com/BeileiCui/EndoDAC)| [ckpt]() |
-| MIDAS   | 0.77    | 345M     | [isl-org/MiDaS](https://github.com/isl-org/MiDaS) | [ckpt]() |
+| DAv1    | 0.87    | 97M      | [LiheYoung/Depth-Anything](https://github.com/LiheYoung/Depth-Anything) | [ckpt](https://digitalsurgery-public.s3.eu-west-1.amazonaws.com/EndoSynth/weights/dav1-f.pth) |
+| DAv2    | 0.81    | 97M      | [DepthAnything-V2](https://github.com/DepthAnything/Depth-Anything-V2)| [ckpt](https://digitalsurgery-public.s3.eu-west-1.amazonaws.com/EndoSynth/weights/dav2-f.pth) |
+| EndoDAC | 0.72    | 42M      | [BeileiCui/EndoDAC](https://github.com/BeileiCui/EndoDAC)| [ckpt](https://digitalsurgery-public.s3.eu-west-1.amazonaws.com/EndoSynth/weights/endodac-f.pth) |
+| MIDAS   | 0.77    | 345M     | [isl-org/MiDaS](https://github.com/isl-org/MiDaS) | [ckpt](https://digitalsurgery-public.s3.eu-west-1.amazonaws.com/EndoSynth/weights/midas-f.pth) |
 
 
 ---
@@ -55,7 +55,7 @@ wget <weights_uri> -P checkpoints
 
 ## Dataset
 
-Please find the `EndoSynth` dataset as in [this following download link]() [zipped folder]
+Please find the `EndoSynth` dataset as in [this following download link](https://digitalsurgery-public.s3.eu-west-1.amazonaws.com/EndoSynth/datasets/EndoSynth-v1.0.zip) [zipped folder]
 
 ---
 
