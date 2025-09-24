@@ -8,7 +8,7 @@ This is the official repository for our paper presented at MICCAI 2025 [Data Eng
 **Zero-shot Monocular Metric Depth for Endoscopic Images**, *Nicolas Toussaint, Emanuele Colleoni, Ricardo Sanchez-Matilla, Joshua
 Sutcliffe, Vanessa Thompson, Muhammad Asad, Imanol Luengo, and Danail Stoyanov*
 
-[ [MICCAI](), [arXiv](https://arxiv.org/abs/2509.18642) ]
+[![arXiv](https://img.shields.io/badge/arXiv-2509.18642-B31B1B.svg)](https://arxiv.org/abs/2509.18642)
 
 ## Main contributions
 
